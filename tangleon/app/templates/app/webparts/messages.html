@@ -1,0 +1,43 @@
+{% load gravatar %}
+{% load app_utils %}
+
+<h4>Messages <a href="{% url 'app_mark_read' %}?message_id={{ last_message_id }}&amp;all=true"
+style="float: right; font-size: 0.9em" data-ajax="true"
+onclick="javascript:$('.messages .unread').each(function() { $(this).removeClass('unread');});">Mark as Read</a></h4>
+<ul class="messages">
+	{% if user_messages %}
+	{% for msg in user_messages %}
+	<li {% if not msg.read_on %}class="unread"{% endif %}>
+		<form action="{% if msg.message_type == 'CO' %}{{ msg.comment_msg.get_absolute_url }}{% else %}{{ msg.comment.get_absolute_url }}{% endif %}#comment-id-{{ msg.comment_msg.comment_id }}" method="get">
+			<input type="hidden" name="message_id" value="{{ msg.message_id }}"/>
+			<div onclick="javascript:$(this).parent('form').submit();" style="overflow: hidden;">
+				{% if msg.post.img_url %}
+				<img src="{{ msg.post.preview_img_url }}" class="post-img"/>
+				{% endif %}
+				<div style="overflow: hidden; float: none; width: auto;">
+					<a href="{{ msg.sender.get_absolute_url }}"><img src="{% gravatar_url msg.sender 50 %}" class="avatar"/></a>
+					<span><a href="{{ msg.sender.get_absolute_url }}">{{ msg.sender.username }}</a> {% if msg.message_type == 'CO' %}
+						commented on your post
+						{% else %}
+						replied to your comment
+						{% endif %}</span>
+					<span class="message-created">
+						<br />
+						{{ msg.created_on|when }} ago</span>
+					<div class="message-post-title">
+						{{ msg.post.title|default:""|truncatewords:"5" }}
+					</div>
+				</div>
+			</div>
+		</form>
+	</li>
+	{% endfor %}
+	<li style="text-align: center;">
+		<a href="{% url 'app_user_messages' app_user.username %}">See all messages</a>
+	</li>
+	{% else %}
+	<li>
+		You have no messages.
+	</li>
+	{% endif %}
+</ul>

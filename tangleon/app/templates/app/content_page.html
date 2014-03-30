@@ -1,0 +1,18 @@
+{% extends "app/base.html" %}
+
+{% load markup2 %}
+
+{% block title %}{{ title }}{% endblock%}
+
+{% block head %}
+{{ block.super }}
+<link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}app/css/page_content.css?{{ STATIC_CONTENT_VERSION }}" />
+{% endblock %}
+
+{% block content %}
+<div class="markdown page-content-container">
+	{{ content|markdown2 }}
+</div>
+{% endblock %}
+
+

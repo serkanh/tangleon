@@ -1,0 +1,19 @@
+<label for="id_tags">Choose tags</label>
+{{ form.tags }}
+{{ form.tags.errors }}
+<div class="message">
+	{{ form.tags.help_text }}
+</div>
+<ul class="tags top-lists" style="margin-top: 0px;">
+	{% for tag in top_tags %}
+	<li>
+		<a href="#" onclick="javascript:add_tag('{{ tag.name|lower }}', '{{ tag.name }}');return false;"><span class="count">{{ tag.pin_count }}</span> {{ tag.name }}</a>
+	</li>
+	{% endfor %}
+</ul>
+
+<script type="text/javascript">
+	function add_tag(tag_id, tag_name){
+		$("#id_tags").tokenInput("add", { id : tag_id, name : tag_name });
+	}	
+</script>

@@ -1,0 +1,34 @@
+{% extends "app/posts_base.html" %}
+
+{% load humanize %}
+
+{% block title %}{{ channel.title }}{% endblock %}
+
+{% block content-view %}
+<div class="content-view">
+	<div class="sidebar">
+		<div class="the-box">
+			<h3  class="sidebar-title" style="{% if channel.icon_url %}background-image: url('{{ channel.icon_url }}'); background-repeat: no-repeat; padding-left: 30px; height: 24px; padding-top: 2px; background-size: 24px;{% endif %}; background-repeat: no-repeat;"><a href="{% url 'app_channel' channel.channel_id %}">{{ channel.title }}</a></h3>
+			{% if subscription %}
+			<form action="{% url 'app_unsubscribe' %}?channel_id={{ channel.channel_id }}" method="post" style="display: inline-block;">
+				{% csrf_token %}
+				<a onclick="javascript:$(this).parent('form').submit();" class="button unsubscribe">Unsubscribe</a>
+			</form>
+			{% else %}
+			<form action="{% url 'app_subscribe' %}?channel_id={{ channel.channel_id }}" method="post" style="display: inline-block;">
+				{% csrf_token %}
+				<a onclick="javascript:$(this).parent('form').submit();" class="button subscribe">Subscribe</a>
+			</form>
+			{% endif %}
+			{{ channel.subscription_count|intword }} reader{{ channel.subscription_count|pluralize }}
+			{% if channel.description %}
+			<div class="source-tags-description">
+				{{ channel.description|striptags|safe }}
+			</div>
+			{% endif %}
+		</div>
+		{% include "app/webparts/top_lists.html" %}
+	</div>
+	{% include "app/webparts/posts.html" %}
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "app/public_base.html" %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block header %}{% endblock %}
+
+{% block content %}
+<div class="action-form action-form-center" style="width: 400px;margin-top: 20px;">
+	{% include "app/webparts/facebook_signin.html" %}
+	<form action="/signup/" method="post">
+		{% include "app/webparts/signup.html" %}
+	</form>
+</div>
+{% endblock %}

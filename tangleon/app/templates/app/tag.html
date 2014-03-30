@@ -1,0 +1,35 @@
+{% extends "app/posts_base.html" %}
+
+{% load markup2 %}
+{% load humanize %}
+
+{% block title %}{{ tag.name }}{% endblock %}
+
+{% block content-view %}
+<div class="content-view">
+	<div class="sidebar">
+		<div class="the-box">
+			<h3 class="sidebar-title"><span class="tag-color">{{ tag.name }}</span><a href="{{ tag.get_absolute_url }}" style="display: block; margin-top: 2px; float: left;">{{ tag.name }}</a></h3>
+			{% if pin %}
+			<form action="{% url 'app_unsubscribe' %}?tag={{ tag.name|urlencode }}" method="post" style="display: inline-block;">
+				{% csrf_token %}
+				<a onclick="javascript:$(this).parent('form').submit();" class="button unsubscribe">Unsubscribe</a>
+			</form>
+			{% else %}
+			<form action="{% url 'app_subscribe' %}?tag={{ tag.name|urlencode }}" method="post" style="display: inline-block;">
+				{% csrf_token %}
+				<a onclick="javascript:$(this).parent('form').submit();" class="button subscribe">Subscribe</a>
+			</form>
+			{% endif %}
+			{{ tag.pin_count|intword }} reader{{ tag.pin_count|pluralize }}
+			{% if tag.description %}
+			<div class="source-tags-description markdown">
+				{{ tag.description|markdown2|safe }}
+			</div>
+			{% endif %}
+		</div>
+		{% include "app/webparts/top_lists.html" %}
+	</div>
+	{% include "app/webparts/posts.html" %}
+</div>
+{% endblock %}

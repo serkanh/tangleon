@@ -1,0 +1,26 @@
+<div>
+	{% if top_tags %}
+	<div class="the-box top-lists">
+		<h3>Top Rooms</h3>
+		<ul class="tags">
+			{% for tag in top_tags %}
+			<li>
+				<a href="{% url 'app_tag' tag.name %}"><span class="count">{{ tag.pin_count }}</span> {{ tag.name }}</a>
+			</li>
+			{% endfor %}
+		</ul>
+	</div>
+	{% endif %}
+	{% if top_channels %}
+	<div class="the-box top-lists">
+		<h3>Top Sources</h3>
+		<ul class="sources">
+			{% for channel in top_channels %}
+			<li>
+				<a href="{% url 'app_channel' channel.channel_id %}"><span class="count">{{ channel.subscription_count }}</span> {{ channel.title|truncatewords:"3" }}</a>
+			</li>
+			{% endfor %}
+		</ul>
+	</div>
+	{% endif %}
+</div>

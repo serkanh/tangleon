@@ -1,0 +1,16 @@
+{% extends "app/page_base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content-view %}
+<div class="action-form action-form-center" style="width: 400px">
+	<ul>
+		<li>
+			<h2>Facebook Login</h2>
+		</li>
+		<li class="warm-text">
+			{{ error|safe }}
+		</li>
+	</ul>
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "app/submit_post_base.html" %}
+
+{% block title %}Submit a link post{% endblock %}
+
+{% block link_post_active_class %}class="active"{% endblock %}
+
+{% block submit_form %}
+<form  action="{% url 'app_link_post' %}" method="post" >
+	{% csrf_token %}
+	<ul  style="width: 600px; margin-top: 10px;">
+		<li>
+			<label for="id_url">Url</label>
+			{{ form.url }}
+			{{ form.url.errors }}
+		</li>
+		<li>
+			<label for="id_title">Title</label>
+			{{ form.title }}
+			{{ form.title.errors }}
+			<br />
+			<div id="get-title-progress-img" class="progress-img" style="float: right;"></div>
+			<a  onclick="javascript:get_title();" style="cursor: pointer;">get title</a>&nbsp; <span id="get-title-progress" class="warm-text"></span>
+		</li>
+		<li>
+			{% include "app/webparts/choose_tags.html" %}
+		</li>
+		<li>
+			<input type="submit" value="Submit">
+		</li>
+	</ul>
+</form>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script type="text/javascript">
+	function get_title() {
+		var url = $('#id_url').val().trim();
+		if (url.length > 0) {
+			$('#get-title-progress').text('');
+			$('#get-title-progress-img').show();
+			$.post('/get_title/', {
+				'url' : $('#id_url').val(),
+				'csrfmiddlewaretoken': '{{ csrf_token }}'
+			}).always(function(data) {
+				$('#get-title-progress').text('');
+				$('#get-title-progress-img').hide();
+				if (data.status == undefined)
+					$('#id_title').val(data);
+				else
+					$('#get-title-progress').text(' ' + data.responseText);
+			});
+		}
+	}
+</script>
+{% endblock %}

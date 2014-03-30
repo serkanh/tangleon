@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en">
+	<head>
+		<meta name="application-name" content="TangleOn"/>
+		<meta name="msvalidate.01" content="44345B977FC544DD66636E2B6917F9F2" />		
+		{% block description %}<meta name="description" content="TangleOn is web aggregator &crarr; run by community on heartbeat &rarr; lives by faith &rarr; Join"/>{% endblock %}
+		<meta name="Language" content="English">
+		<meta property="og:site_name" content="TangleOn"/>
+		<meta property="fb:admins" content="537113478,100000484342670" />		
+		<meta name="robots" content="noodp,noydir" />
+		{% block robots_meta %}{% endblock %}
+		<meta name="application-url" content="http://www.tangleon.com?shortcut=true"/>
+		<meta name="twitter:card" content="photo"/>
+		<meta name="twitter:site" content="@tangle_on"/>
+		<meta property="og:site_name" content="TangleOn"/>
+		{% block meta_head %}
+		<meta property="og:title" content="TangleOn: the internet ride"/>
+		<meta property="og:type" content="website"/>
+		<meta property="og:url" content="http://www.tangleon.com">
+		<meta property="og:image" content="http://www.tangleon.com{{ STATIC_URL }}img/tangleon-icon.png"/>
+		<meta property="og:description" content="{% block og_description %}TangleOn is web aggregator &crarr; run by community on heartbeat &rarr; lives by faith &rarr; Join{% endblock %}"/>
+		{% endblock %}
+		<title>{% block title %}TangleOn: the internet ride{% endblock %}</title>
+		<link rel="icon shortcut" href="{{ STATIC_URL }}img/tangleon-icon.png" type="image/png" sizes="128x128"/>		
+		<link href="{{ STATIC_URL }}css/site.css?{{ STATIC_CONTENT_VERSION }}" type="text/css" rel="stylesheet"/>
+		{% block head %}
+		{% endblock %}
+	</head>
+	<body>
+		{% block body-content %}
+		{% endblock %}		
+		{% block scripts %}{% endblock %}
+		{% if not debug %}
+		<!-- Google Analytics START -->
+		<script type="text/javascript">
+			(function(i, s, o, g, r, a, m) {
+				i['GoogleAnalyticsObject'] = r;
+				i[r] = i[r] ||
+				function() {
+					(i[r].q = i[r].q || []).push(arguments)
+				}, i[r].l = 1 * new Date();
+				a = s.createElement(o), m = s.getElementsByTagName(o)[0];
+				a.async = 1;
+				a.src = g;
+				m.parentNode.insertBefore(a, m)
+			})(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+			ga('create', 'UA-45268584-1', 'tangleon.com');
+			ga('send', 'pageview');
+		</script>
+		<!-- Google Analytics END -->		
+		<!-- Histats.com  START  (aync)-->
+		<script type="text/javascript">
+			var _Hasync = _Hasync || [];
+			_Hasync.push(['Histats.start', '1,2494371,4,511,95,18,00000000']);
+			_Hasync.push(['Histats.fasi', '1']);
+			_Hasync.push(['Histats.track_hits', '']);
+			(function() {
+				var hs = document.createElement('script');
+				hs.type = 'text/javascript';
+				hs.async = true;
+				hs.src = ('http://s10.histats.com/js15_as.js');
+				(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
+			})();
+		</script>
+		<noscript>
+			<a href="http://www.histats.com" target="_blank"><img  src="http://sstatic1.histats.com/0.gif?2494371&101" alt="best tracker" border="0"></a>
+		</noscript>
+		<!-- Histats.com  END  -->
+		{% endif %}
+	</body>
+</html>

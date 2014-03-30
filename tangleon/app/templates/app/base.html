@@ -1,0 +1,33 @@
+{% extends "skeleton.html" %}
+
+{% load gravatar %}
+
+{% block head %}
+<link href="{{ STATIC_URL }}app/css/base.css?{{ STATIC_CONTENT_VERSION }}" type="text/css" rel="stylesheet"/>
+<link rel="alternate" type="application/rss+xml" title="Latest | TangleOn" href="{% url 'feeds_new' %}" />
+<link rel="http://oexchange.org/spec/0.8/rel/related-target" type="application/xrd+xml" href="{% url 'app_oexchange' %}"/>
+{% endblock %}
+
+{% block body-content %}
+<div id="page-bar">
+	<a id="icon" href="/"><h1>TangleOn</h1></a>
+	<a id="white-logo" href="/">TangleOn</a>
+	{% block page-bar-content %}{% endblock %}
+</div>
+<div id="content">
+	{% block content %}{% endblock %}
+</div>
+{% block footer %}
+<footer>
+	<a href="{% url 'app_policy' %}">Privacy Policy</a>&nbsp;&nbsp;&nbsp;<a href="{% url 'app_index' %}">TangleOn &copy; 2014</a>
+</footer>
+{% endblock %}
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script type="text/javascript" src="{{ STATIC_URL }}lib/jquery-1.7.2.min.js?{{ STATIC_CONTENT_VERSION }}"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}lib/jquery.unobtrusive-ajax.js?{{ STATIC_CONTENT_VERSION }}"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}app/lib/jquery-util.js?{{ STATIC_CONTENT_VERSION }}"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}app/lib/jquery-util-ready.js?{{ STATIC_CONTENT_VERSION }}"></script>
+{% endblock %}

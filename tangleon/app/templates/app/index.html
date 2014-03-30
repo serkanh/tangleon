@@ -1,0 +1,24 @@
+{% extends "app/posts_base.html" %}
+
+{% block robots_meta %}
+{% if page_index or by_new %}
+<meta name="robots" content="noindex,follow" />
+{% endif %}
+{% endblock %}
+
+{% block content-view %}
+{% comment %}
+{% if app_user.is_anonymous %}
+<div class="welcome" style="margin-bottom: -10px;">
+	<span style="float: left; margin-top: 4px; display: block;">TangleOn is web aggregator &crarr;</span><span style="color: yellow">run by community on heartbeat &rarr; lives by faith &rarr; <a href="{% url 'app_signup' %}" style="color: #f0f0ff !important;font-weight: bold;">Join</a></span>
+</div>
+{% endif %}
+{% endcomment %}
+<div class="content-view">
+	<div class="sidebar">
+		{% include "app/webparts/top_lists.html" %}
+	</div>
+	{% include "app/webparts/posts.html" %}
+</div>
+{% endblock %}
+

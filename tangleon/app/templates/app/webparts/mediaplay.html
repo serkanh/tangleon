@@ -1,0 +1,26 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="{{ STATIC_URL }}app/css/mediaplay.css?{{ STATIC_CONTENT_VERSION }}" />
+	</head>
+	<body>
+		{% if post.vid_type == "application/x-shockwave-flash" %}
+		<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" width="100%" height="100%" id="movie_name" align="middle">
+			<param name="movie" value="{{ post.vid_url }}"/>
+			<!--[if !IE]>-->
+			<object type="application/x-shockwave-flash" data="{{ post.vid_url }}" width="100%" height="100%" bgcolor="#000000">
+				<param name="movie" value="{{ post.vid_url }}"/>
+				<param name="allowfullscreen" value="true">
+				<param name="allowscriptaccess" value="always">
+				<param name="seamlesstabbing" value="true">
+				<param name="wmode" value="opaque">
+				<!--<![endif]-->
+				<a href="http://www.adobe.com/go/getflash" target="_blank"><img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player"/> </a>
+				<!--[if !IE]>-->
+			</object>
+			<!--<![endif]-->
+		</object>
+		{% else %}
+		<object data="{{ post.vid_url }}" type="{{ post.vid_type }}" width="100%" height="100%"></object>
+		{% endif %}
+	</body>
+</html>

@@ -1,0 +1,47 @@
+<div style="overflow: hidden">
+	<div class="posts-view">
+		{% include "app/webparts/flash_messages.html" %}
+		<ul class="the-box sub-title-bar">
+			<li {% if source.active == 'top' %}class="active"{% endif %}>
+				<a href="{{ source.absolute_url }}">Top</a>
+			</li>
+			<li {% if source.active == 'new' %}class="active"{% endif %}>
+				<a href="{{ source.absolute_url_by_new }}">New</a>
+			</li>
+			{% if source.votes_url %}
+			<li {% if source.active == 'votes' %}class="active"{% endif %}>
+				<a href="{{ source.votes_url }}">votes</a>
+			</li>
+			{% endif %}
+			{% if source.comments_url %}
+			<li {% if source.active == 'comments' %}class="active"{% endif %}>
+				<a href="{{ source.comments_url }}">comments</a>
+			</li>
+			{% endif %}
+			{% if source.messages_url %}
+			<li {% if source.active == 'messages' %}class="active"{% endif %}>
+				<a href="{{ source.messages_url }}">messages</a>
+			</li>
+			{% endif %}
+			<li class="sub-title">
+				{{ source.title }}
+			</li>
+		</ul>
+		<ul class="posts-listing">
+			{% with  preview_img_width=75 preview_img_height=75 %}
+			{% for post in posts %}
+			<li class="post-content">
+				{% include "app/webparts/post_content.html" %}
+			</li>
+			{% empty %}
+			<li class="message-box">
+				{{ posts_empty_msg|default:"There is nothing to show right now." }}
+			</li>
+			{% endfor %}
+			{% endwith %}
+		</ul>
+		<div class="page-nav">
+			{% if prev_url %}<a href="{{ prev_url  }}" class="prev button" rel="prev">prev</a>{% endif %}{% if next_url %}<a href="{{ next_url  }}" class="next button" rel="next">next</a>{% endif %}
+		</div>
+	</div>
+</div>

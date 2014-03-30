@@ -1,0 +1,16 @@
+{% extends "app/posts_base.html" %}
+
+{% load humanize %}
+
+{% block title %}{{ q }}{% endblock %}
+
+{% block content-view %}
+<div class="content-view">
+	<div class="sidebar">
+		{% include "app/webparts/top_lists.html" %}
+	</div>
+	{% with posts_empty_msg="No posts found for your search criteria" %}
+	{% include "app/webparts/posts.html" %}
+	{% endwith %}
+</div>
+{% endblock %}

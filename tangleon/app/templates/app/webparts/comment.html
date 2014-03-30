@@ -1,0 +1,72 @@
+{% load markup2 %}
+{% load app_utils %}
+
+{% if not comment.is_muted %}
+<div id="comment-id-{{ comment.comment_id }}" style="margin-bottom: 10px;">
+	<div>
+		<div class="comment-votes">
+			<form data-ajax-url="{% url 'app_comment_vote' %}" method="post" data-ajax="true" data-ajax-complete="update_comment_vote">
+				{% csrf_token %}
+				<input type="hidden" name="post_id" value="{{ post.post_id }}"/>
+				<input type="hidden" name="comment_id" value="{{ comment.comment_id }}"/>
+				<input type="hidden" name="action" value="up"/>
+				<a onclick="javascript:$(this).parent('form').submit();" class="up-vote {% ifequal comment.vote_index 1 %}up-vote-on{% endifequal %}" title="Vote-UP if you favor this comment.">&#9650;</a>
+			</form>
+			<div class="votes">
+				{{ comment.votes }}
+			</div>
+			<form data-ajax-url="{% url 'app_comment_vote' %}" method="post" data-ajax="true" data-ajax-complete="update_comment_vote">
+				{% csrf_token %}
+				<input type="hidden" name="post_id" value="{{ post.post_id }}"/>
+				<input type="hidden" name="comment_id" value="{{ comment.comment_id }}"/>
+				<input type="hidden" name="action" value="down"/>
+				<a onclick="javascript:$(this).parent('form').submit();" class="down-vote {% ifequal comment.vote_index -1 %}down-vote-on{% endifequal %}" title="Vote-DOWN if you don't agree to this comment.">&#9660;</a>
+			</form>
+		</div>
+
+		<div class="comment-links">
+			<a href="{% url 'app_user' comment.created_by %}" style="font-weight: bold;" {% if post.user_id == comment.user_id %}class="submitter"{% endif %}>{{ comment.created_by }}</a><em>{{ comment.created_on|when:utc_now }} ago</em>
+		</div>
+		<div class="comment-text markdown">
+			<div id="comment-text-id-{{ comment.comment_id }}" {% if comment_id == comment.comment_id %}class="comment-text-highlight"{% endif %}>
+				{{ comment.comment_text|striptags|markdown2 }}
+			</div>
+			<div class="comment-links">
+				<a href="{{ comment.get_absolute_url }}" class="comment-small" rel="nofollow">permalink</a>
+				{% if comment.reply_to_id %}
+				{% if comment_id %}
+				<a href="{{ comment.get_absolute_url }}#comment-id-{{ comment.reply_to_id }}" class="comment-small" rel="nofollow">parent</a>
+				{% else %}
+				<a href="{{ post.get_absolute_url }}#comment-id-{{ comment.reply_to_id }}" class="comment-small" rel="nofollow">parent</a>
+				{% endif %}				
+				{% endif %}
+				{% if request.app_user.is_authenticated %}
+				<a onclick="javascript:$('#comment-reply-{{ comment.comment_id }}').fadeIn('fast');" class="comment-reply-link">reply</a>
+				{% else %}
+				<a href="{% url 'app_login' %}?next={{ post.get_absolute_url|urlencode }}" class="comment-reply-link" rel="nofollow">reply</a>
+				{% endif %}
+				<a href="http://tangleon.com{{ post.get_short_url }}" rel="nofollow" onclick="javascript:$(this).attr('data-content', $('#comment-text-id-{{ comment.comment_id }}').text().fulltrim()); return shareOnTwitter.call(this);" data-action="share:twitter" data-content="">Twitter</a>
+			</div>
+			{% if request.app_user.is_authenticated %}
+			<form  id="comment-reply-{{ comment.comment_id }}" action="{% url 'app_reply_save' post.post_id post.slug %}" class="comment-reply" method="post"
+			data-ajax="true" data-ajax-url="{% url 'app_reply_save' post.post_id post.slug %}" data-ajax-update="#comment-replies-id-{{ comment.comment_id }}" data-ajax-mode="before" data-ajax-begin="$('#reply-input-for-comment-id-{{ comment.comment_id }}').val('');$('#comment-reply-{{ comment.comment_id }}').hide(	);" data-ajax-loading="#loading-comment-id-{{ comment.comment_id }}">
+				{% csrf_token %}
+				<input type="hidden" name="comment_id" value="{{ comment.comment_id }}"/>
+				<textarea id="reply-input-for-comment-id-{{ comment.comment_id }}" name="comment_text" maxlength="1000">{{ comment_text|safe }}</textarea>
+				<br/>
+				<input type="button" value="Cancel" onclick="javascript:$(this).parent('form').fadeOut('slow');"/>
+				<input type="submit" value="Save"/>
+			</form>
+			<div id="loading-comment-id-{{ comment.comment_id }}" class="progress-img"></div>
+			{% endif %}
+		</div>
+	</div>
+	<div id="comment-replies-id-{{ comment.comment_id }}" class="comment-replies">
+		{% for comment in comment.replies %}
+		{% include template_name %}
+		{% endfor %}
+	</div>
+</div>
+{% else %}
+{% include "app/webparts/content_muted.html" %}
+{% endif %}

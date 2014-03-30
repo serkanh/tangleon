@@ -1,0 +1,69 @@
+{% extends "app/posts_base.html" %}
+
+{% load gravatar %}
+{% load humanize %}
+
+{% block title %}{{ user.username }}{% endblock %}
+
+{% block robots_meta %}
+{% if not source.active == 'top' or page_index %}
+<meta name="robots" content="noindex,follow" />
+{% endif %}
+{% endblock %}
+
+{% block meta_head %}
+<meta property="og:type" content="profile"/>
+<meta property="profile:username" content="{{ user.username }}"/>
+<meta property="og:title" content="{{ user.username }} | TangleOn"/>
+<meta property="og:url" content="http://www.tangleon.com{{ user.get_absolute_url }}"/>
+<meta property="og:image" content="{% gravatar_url user 256 %}"/>
+<meta property="og:description" content="TangleOn member since {{ user.created_on|date:"N d, Y" }}"/>
+<meta property="twitter:url" content="http://tangleon.com{{ user.get_absolute_url }}"/>
+{% endblock %}
+
+{% block content-view %}
+<div class="content-view">
+	<div class="sidebar">
+		<div class="the-box user-info">
+			<div style="overflow: hidden; margin-top: 0px;">
+				{% with fbuser=user.fbuser_set.all.0 %}
+				{% if fbuser %}
+				<a href="http://www.facebook.com/{{ fbuser.fb_id }}"><img src="https://graph.facebook.com/{{ fbuser.fb_id }}/picture?width=80&height=80"/></a>
+				<a href="https://www.facebook.com/{{ fbuser.fb_id }}">{{ user.username }}</a>
+				{% else %}
+				<a href="{% gravatar_profile_url user %}"><img src="{% gravatar_url user 80 %}"/></a>
+				<a href="{{ user.get_absolute_url }}">{{ user.username }}</a>
+				{% endif %}
+				{% endwith %}
+			</div>
+			<div>
+				<span style="font-size:1.5em">{{ user.post_count }}</span> post{{ user.post_count|pluralize }}
+			</div>
+			<div>
+				<span style="font-size:1.5em">{{ user.comment_count }}</span> comment{{ user.comment_count|pluralize }}
+			</div>
+			<div>
+				<small> <span class="cool-text">{{ user.up_votes|intcomma }} like{{ user.up_votes|pluralize }}</span> | <span class="warm-text">{{ user.down_votes|intcomma }} dislike{{ user.down_votes|pluralize }}</span> </small>
+			</div>
+			<div>
+				member since {{ user.created_on|date:"N d, Y" }}
+			</div>
+			{% if user.user_id != app_user.user_id %}
+			{% if follow %}
+			<form action="{% url 'app_unsubscribe' %}?username={{ user.username }}" method="post" style="display: inline-block;">
+				{% csrf_token %}
+				<a onclick="javascript:$(this).parent('form').submit();" class="button unsubscribe">Unfollow</a>
+			</form>
+			{% else %}
+			<form action="{% url 'app_subscribe' %}?username={{ user.username }}" method="post" style="display: inline-block;">
+				{% csrf_token %}
+				<a onclick="javascript:$(this).parent('form').submit();" class="button subscribe">Follow</a>
+			</form>
+			{% endif %}
+			{{ user.follower_count|intword }} follower{{ user.follower_count|pluralize }}
+			{% endif %}
+		</div>
+	</div>
+	{% include "app/webparts/posts.html" %}
+</div>
+{% endblock %}

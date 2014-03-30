@@ -1,0 +1,73 @@
+{% extends "app/page_base.html" %}
+
+{% load humanize %}
+
+{% block title %}Friends{% endblock %}
+
+{% block content-view %}
+<div class="content-view">
+	<div class="sidebar">		
+		{% include "app/webparts/top_lists.html" %}
+	</div>
+	<div style="overflow: hidden;">
+		{% include "app/webparts/flash_messages.html" %}
+		{% if error %}
+		<div class="error_message">
+			{{ error }}
+		</div>
+		{% elif friends %}
+		<h2>Follow your friends</h2>
+		<br />
+		<ul class="friends-listing">
+			{% for friend in friends %}
+			{% with user=friend.user %}
+			<li class="post-content">
+				<img src="http://graph.facebook.com/{{ friend.username }}/picture?width=80&height=80" style="float: left;height: 80px;width: 80px"/>
+				<div class="friend-div">
+					{% if friend.follow %}
+					<form data-ajax-url="{% url 'app_unsubscribe' %}?username={{ user.username }}" data-ajax="true" data-ajax-success="changeFollowOrUnFollow('#id-follow-{{ user.user_id }}')" method="post" style="display: inline-block; float: right;">
+						{% csrf_token %}
+						<a id="id-follow-{{ user.user_id }}" onclick="javascript:$(this).parent('form').submit();" class="button unsubscribe">Unfollow</a>
+					</form>
+					{% else %}
+					<form data-ajax-url="{% url 'app_subscribe' %}?username={{ user.username }}" data-ajax="true" data-ajax-success="changeFollowOrUnFollow('#id-follow-{{ user.user_id }}')" method="post" style="display: inline-block; float: right">
+						{% csrf_token %}
+						<a id="id-follow-{{ user.user_id }}" onclick="javascript:$(this).parent('form').submit();" class="button subscribe">Follow</a>
+					</form>
+					{% endif %}
+					<a href="{% url 'app_user' friend.username %}" style="display: block; overflow: hidden;">{{ friend.name }} <em>({{ friend.username }})</em></a>
+					<div>
+						<span style="font-size:1.5em">{{ user.post_count }}</span> post{{ user.post_count|pluralize }}
+					</div>
+					<div>
+						<span style="font-size:1.5em">{{ user.comment_count }}</span> comment{{ user.comment_count|pluralize }}
+					</div>
+					<div>
+						<small> <span class="cool-text">{{ user.up_votes|intcomma }} like{{ user.up_votes|pluralize }}</span> | <span class="warm-text">{{ user.down_votes|intcomma }} dislike{{ user.down_votes|pluralize }}</span> </small>
+					</div>
+					<div>
+						member since {{ user.created_on|date:"N d, Y" }}
+					</div>
+				</div>
+			</li>
+			{% endwith %}
+			{% endfor %}
+		</ul>
+		<a href="{{ return_next }}" class="button" style="float: right;">Next</a>
+		{% endif %}
+	</div>
+</div>
+<script type="text/javascript">
+	function changeFollowOrUnFollow(id) {
+		if ($(id).hasClass('subscribe')) {
+			$(id).removeClass('subscribe');
+			$(id).addClass('unsubscribe');
+			$(id).text('Unfollow');
+		} else {
+			$(id).removeClass('unsubscribe');
+			$(id).addClass('subscribe');
+			$(id).text('Follow');
+		}
+	}
+</script>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "app/submit_post_base.html" %}
+
+{% block title %}Submit a text post{% endblock %}
+
+{% block text_post_active_class %}class="active"{% endblock %}
+
+{% block sidebar_content %}
+<!--googleoff: index-->
+<!--noindex-->
+<div class="robots-nocontent the-box">
+	<h3>How to post?</h3>
+	<p>
+		We support markdown formatting in description, you can write stylish text using following predefined code
+		<br />
+		<br />
+	</p>
+	{% include "app/webparts/markdown_help.html" %}
+</div>
+<!--/noindex-->
+<!--googleon: index-->
+{% endblock %}
+
+{% block submit_form %}
+<form action="{% url 'app_text_post' %}" method="post">
+	{% csrf_token %}
+	<ul  style="width: 600px; margin-top: 10px;">
+		<li>
+			<label for="id_title">Title</label>
+			{{ form.title }}
+			{{ form.title.errors }}
+		</li>
+		<li>
+			<label for="id_description">Description <em>(Optional)</em></label>
+			<br />
+			{{ form.description }}
+			{{ form.description.errors }}
+			<em style="float: right"><span id="id_description_count"></span> characters left</em>
+		</li>
+		<li>
+			{% include "app/webparts/choose_tags.html" %}
+		</li>
+		<li>
+			<input type="submit" value="Submit">
+		</li>
+	</ul>
+</form>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script type="text/javascript">
+	$('#id_description').keypress(function() {
+		var length = $(this).val().length;
+		$('#id_description_count').text(this.maxLength - length);
+	});
+
+	$('#id_description').trigger('keypress'); 
+</script>
+{% endblock %}

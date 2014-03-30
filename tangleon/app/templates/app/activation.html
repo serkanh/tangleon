@@ -1,0 +1,22 @@
+{% extends "app/public_base.html" %}
+
+{% block title %}Account Activation{% endblock %}
+
+{% block content %}
+<div class="action-form action-form-center" style="width: 400px">
+	<ul>
+		<li>
+			<h2>Account Activation</h2>			
+		</li>
+		{% if not activation_error %}
+		<li class="message">
+			Thank you for activating your TangleOn account, please proceed to <a href="/login/">login</a>.
+		</li>
+		{% else %}
+		<li class="error_message">
+			{{ activation_error|safe }}
+		</li>
+		{% endif %}
+	</ul>
+</div>
+{% endblock %} 

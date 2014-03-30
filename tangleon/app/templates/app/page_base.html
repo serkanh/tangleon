@@ -1,0 +1,100 @@
+{% extends "app/base.html" %}
+
+{% load markup2 %}
+{% load gravatar %}
+
+{% block page-bar-content %}
+{% if app_user.is_authenticated %}
+{% include "app/webparts/profile_menu.html" %}
+{% else %}
+{% include "app/webparts/login_menu.html" %}
+{% endif %}
+{% include "app/webparts/bar_search.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="subs-list the-box">
+	<ul>
+		<li id="rooms">
+			<h5>Rooms</h5>
+			<div class="context-menu" context-menu="#rooms">
+				<span class="arrow"></span>
+				<ul >
+					{% for tag in tags %}
+					<li>
+						<a href="{{ tag.get_absolute_url }}" title="{{ tag.name}}"><span class="tag-color">{{ tag.name }}</span><span class="tag-name">{{ tag.name }}</span></a>
+					</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</li>
+		<li id="sources">
+			<h5>Sources</h5>
+			<div class="context-menu" context-menu="#sources">
+				<span class="arrow"></span>
+				<ul >
+					{% for channel in channels %}
+					<li>
+						<a href="{{ channel.get_absolute_url }}" title="{% firstof channel.description channel.title %}"> {% if channel.icon_url %} <img src="{{ channel.icon_url }}" alt="{{ channel.title }} icon" /> {% else %} <img src="{{ STATIC_URL }}app/img/rss.png" /> {% endif %} <span>{{ channel.title }}</span></a>
+					</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</li>
+		{% if app_user.is_authenticated %}
+		<li id="following">
+			<h5 class="menu-item">Following</h5>
+			<div class="context-menu" context-menu="#following">
+				<span class="arrow"></span>
+				<ul >
+					{% for user in followings %}
+					<li>
+						<a href="{{ user.get_absolute_url }}" title="{{ user.username }}"> <img src="{% gravatar_url user 32 %}"/> <span>{{ user.username }}</span></a>
+					</li>
+					{% empty %}
+					<li>
+						<h4>
+						 	You are not following anyone.
+						</h4>
+					</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</li>
+		{% endif %}
+	</ul>
+</div>
+{% block content-view %}{% endblock %}
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+{% comment %}
+{% if app_user.is_anonymous  %}
+<div id="signup-form" class="box-container" style="display: block;">
+	<div class="center">
+		<div class="middle">
+			<div class="box-content" style="box-shadow: none;border:0px;">
+				<div class="action-form signup-popup">
+					{% include "app/webparts/facebook_signin.html" %}
+					<form data-ajax-url="{% url 'app_signup' %}" data-ajax="true" method="post" data-ajax-update="#signup-ajax-div" data-ajax-loading="#signup-form-img">
+						<span id="signup-form-img" class="progress-img"></span>
+						<div id="signup-ajax-div">
+							{% include "app/webparts/signup.html" %}
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endif %}
+{% endcomment %}
+<script type="text/javascript" src="{{ STATIC_URL }}app/lib/jquery-ui-1.10.3.min.js?{{ STATIC_CONTENT_VERSION }}"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}app/lib/jquery.slimscroll.min.js?{{ STATIC_CONTENT_VERSION }}"></script>
+<script type="text/javascript">
+	$('.tag-color').each(function() {
+		$(this).css('background', stringToColor($(this).text().trim()));
+	}); 
+</script>
+{% endblock %}

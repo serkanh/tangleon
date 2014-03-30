@@ -1,0 +1,13 @@
+{% if app_user.is_authenticated %}
+{% with flash_messages=app_user.get_flash_messages %}
+{% if flash_messages %}
+<ul class="flash-messages">
+	{% for message in flash_messages %}
+	<li class="{{ message.flash_type }}">
+		{{ message.flash_text }}
+	</li>
+	{% endfor %}	
+</ul>
+{% endif %}
+{% endwith %}
+{% endif %}

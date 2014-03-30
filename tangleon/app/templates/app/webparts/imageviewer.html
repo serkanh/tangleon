@@ -1,0 +1,16 @@
+<link rel="stylesheet" href="{{ STATIC_URL }}app/css/imageviewer.css?{{ STATIC_CONTENT_VERSION }}"/>
+<div  id="iv_container" class="box-container">
+	<div class="center">
+		<div class="middle">
+			<div class="box-content">
+				<img id="iv_image" src=""  />
+				<div class="overlay">
+					<a id="iv_visit_link" href="#" style="display:none;">Visit Link</a>
+					<a id="iv_comment_link" href="#">Comment</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript" src="{{ STATIC_URL }}app/lib/jquery.imageviewer.js?{{ STATIC_CONTENT_VERSION }}"></script>
+<script type="text/javascript">$('[iv_src]').imageViewer();</script>

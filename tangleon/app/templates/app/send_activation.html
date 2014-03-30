@@ -1,0 +1,23 @@
+{% extends "app/public_base.html" %}
+
+{% block title %}Send Activation Code{% endblock %}
+
+{% block content %}
+<div id="content" class="action-form action-form-center" style="width: 500px">
+	<ul>
+		<li>
+			<h2>Send Activation Code</h2>
+			<div style="margin-bottom: 20px; height: 1px; width:400px; opacity: 0.1; background-color: #333333"></div>
+		</li>
+		{% if not send_activation_error %}
+		<li class="message">
+			A new activation code has been sent to your email address.
+		</li>
+		{% else %}
+		<li class="error_message">
+			{{ send_activation_error|safe }}
+		</li>
+		{% endif %}
+	</ul>
+</div>
+{% endblock %} 

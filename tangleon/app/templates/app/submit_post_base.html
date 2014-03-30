@@ -1,0 +1,68 @@
+{% extends "app/page_base.html" %}
+
+{% block head %}
+{{ block.super }}
+<link rel="stylesheet" href="{{ STATIC_URL }}app/css/token-input-facebook.css?{{ STATIC_CONTENT_VERSION }}" type="text/css" />
+{% endblock %}
+
+{% block content-view %}
+<div class="content-view">
+	<div class="sidebar">		
+		{% block sidebar_content %}{% endblock %}
+	</div>
+	<div class="action-form submit-post-form">
+		<ul class="sub-title-bar">
+			<li {% block link_post_active_class %}{% endblock %}>
+				<a href="{% url 'app_link_post' %}">Link</a>
+			</li>
+			<li {% block text_post_active_class %}{% endblock %}>
+				<a href="{% url 'app_text_post' %}">Text</a>
+			</li>
+			<li class="sub-title">
+				Submit Post
+			</li>
+		</ul>
+		<div id="error-message" class="error_message">
+			{{ error|default:""|safe }}
+		</div>
+		{% block submit_form %} {% endblock %}		
+	</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script type="text/javascript" src="{{ STATIC_URL }}app/lib/jquery.tokeninput.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		var tags = $("#id_tags").val().split(',');
+
+		$("#id_tags").tokenInput("{% url 'app_tag_search' %}", {
+			minChars : 3,
+			tokenLimit : 5,
+			preventDuplicates : true,
+			theme : 'facebook',			
+			onAdd : updateTags,
+			onDelete : updateTags
+		});
+
+		$.each(tags, function(key, tag) {
+			tag = tag.trim();
+			if (tag.length > 0)
+				$("#id_tags").tokenInput("add", {
+					id : tag,
+					name : tag
+				});
+		});
+	});
+
+	function updateTags(data) {
+		var $tags = $('#id_tags');
+		$tags.val('');
+		$.each($(this).tokenInput('get'), function(index, tag) {
+			$tags.val($tags.val() + tag.name + ',');
+		});
+	}
+</script>
+{% endblock %}
+

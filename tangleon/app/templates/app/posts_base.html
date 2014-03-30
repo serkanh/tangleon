@@ -1,0 +1,12 @@
+{% extends "app/page_base.html" %}
+
+{% block robots_meta %}
+<meta name="robots" content="noindex,follow" />
+{{ block.super }}
+{% endblock %}
+
+
+{% block scripts %}
+{{ block.super }}
+{% include "app/webparts/imageviewer.html" %}
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "app/public_base.html" %}
+
+{% block title %}Login{% endblock %}
+
+
+{% block content %}
+<div class="action-form action-form-center" style="width: 400px">
+	{% include "app/webparts/facebook_signin.html" %}
+	<form action="" method="post">
+		{% csrf_token %}
+		<ul>
+			<li>
+				<h2>Sign In</h2>
+			</li>
+			{% if send_activation_code %}
+			<li class="message" style="color: #333333">
+				Your account is not activated yet!, please click <a href="/send_activation/?email={{ email }}">here</a> to re-send activation code.
+			</li>
+			{% else %}
+
+			<li>
+				Sign into the web aggregator.
+			</li>
+
+			{% if login_error %}
+			<li class="error_message">
+				{{ login_error|safe }}
+			</li>
+			{% endif %}
+			<li>
+				<label for="id_username">Username</label>
+				<input id="id_username" name="username" type="text" value="{{ username }}"/>
+			</li>
+			<li>
+				<label for="id_password">Password</label>
+				<input id="id_password" name="password" type="password"/>
+			</li>
+			<li>
+				<input type="submit" value="Login">
+			</li>
+			<li style="text-align: right;">
+				<a href="/signup/">Create My Account</a> | <a href="/forgot_password/">Forgot your password?</a>
+			</li>
+			{% endif %}
+		</ul>
+	</form>
+</div>
+{% endblock %}

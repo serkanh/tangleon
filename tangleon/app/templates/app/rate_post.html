@@ -1,0 +1,80 @@
+{% extends "app/base.html" %}
+
+{% load markup2 %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block meta_head %}
+<link rel="canonical" href="http://www.tangleon.com{{ post.get_absolute_url }}"/>
+<link rel="author" href="http://www.tangleon.com{% url 'app_user' post.username %}"/>
+<meta property="og:type" content="article"/>
+<meta property="og:title" content="{{ post.title }}"/>
+<meta property="og:url" content="http://www.tangleon.com{{ post.get_absolute_url }}"/>
+{% if post.img_url %}
+<meta property="og:image" content="{{ post.img_url }}"/>
+<link rel="image_src" href="{{ post.img_url }}" />
+{% else %}
+<meta property="og:image" content="http://www.tangleon.com{{ STATIC_URL }}img/tangleon-logo.png"/>
+<link rel="image_src" href="http://www.tangleon.com{{ STATIC_URL }}img/tangleon-logo.png" />
+{% endif %}
+{% if post.description %}
+<meta property="og:description" content="{{ post.description|markdown2|striptags }}"/>
+{% endif %}
+<meta property="twitter:url" content="http://tangleon.com{{ post.get_short_url }}"/>
+{% endblock %}
+
+
+{% block head %}
+{{ block.super}}
+<link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}app/css/rate.css?{{ STATIC_CONTENT_VERSION }}"/>
+{% endblock %}
+
+{% block page-bar-content %}
+<div id="left-bar">
+	{% include "app/webparts/bar_search.html" %}
+
+</div>
+<div id="right-bar">
+	{% if app_user.is_authenticated %}
+	{% include "app/webparts/profile_menu.html" %}
+	{% else %}
+	{% include "app/webparts/login_menu.html" %}
+	{% endif %}
+</div>
+<div id="center-bar">
+	<ul id="post-id-{{ post.post_id }}">
+		<li>
+			<a class="post-comments-count" href="{{ post.get_absolute_url }}"><span itemprop="count">{{ post.comment_count }}</span> comment{{ post.comment_count|pluralize }}</a>
+		</li>
+		<li>
+			<meta itemprop="rating" content="{{ post.scaled_rating }}"/>
+			<form data-ajax-url="{% url 'app_post_vote' %}" method="post" data-ajax="true" data-ajax-complete="update_vote">
+				{% csrf_token %}
+				<input type="hidden" name="post_id" value="{{ post.post_id }}"/>
+				<input type="hidden" name="action" value="down"/>
+				<a onclick="javascript:$(this).parent('form').submit();" class="down-vote {% ifequal post.vote_index -1 %}down-vote-on{% endifequal %}" title="Vote-DOWN if you don't like this post.">&#9660;</a>
+			</form>
+		</li>
+		<li>
+			<span class="votes" itemprop="votes"> {{ post.votes }} </span>
+		</li>
+		<li>
+			<form data-ajax-url="{% url 'app_post_vote' %}" method="post" data-ajax="true" data-ajax-complete="update_vote">
+				{% csrf_token %}
+				<input type="hidden" name="post_id" value="{{ post.post_id }}"/>
+				<input type="hidden" name="action" value="up"/>
+				<a onclick="javascript:$(this).parent('form').submit();" class="up-vote {% ifequal post.vote_index 1 %}up-vote-on{% endifequal %}" title="Vote-UP if you like this post.">&#9650;</a>
+			</form>
+		</li>
+
+	</ul>
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="page-container">
+	<iframe id="page-frame" src="{{ post.link }}"  style=""  border="0" frameborder="0" hspace="0" vspace="0" marginheight="0" marginwidth="0"></iframe>
+</div>
+{% endblock %}
+
+{% block footer %}{% endblock %}

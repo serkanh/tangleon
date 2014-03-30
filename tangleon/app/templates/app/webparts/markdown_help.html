@@ -1,0 +1,15 @@
+{% load markup2 %}
+{% load app_utils %}
+
+<table class="markdown-help-text">
+	<tr>
+		<th>What you type</th>
+		<th style="padding-left: 5px;"	>How you will see</th>
+	</tr>
+	{% for line in markdown_help_text|split_by_line %}
+	<tr>
+		<td>		<pre>{{ line }}</pre></td>
+		<td class="markdown" style="padding-left: 5px;">{{ line|markdown2 }}</td>
+	</tr>
+	{% endfor %}
+</table>

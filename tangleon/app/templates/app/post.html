@@ -1,0 +1,147 @@
+{% extends "app/page_base.html" %}
+
+{% load markup2 %}
+{% load app_utils %}
+{% load humanize %}
+{% load image_utils %}
+{% load gravatar %}
+
+{% block title %}{{ post.title }}{% endblock %}
+{% block description %}
+{% if post.description %}
+<meta name="description" content="{{ post.description|default:''|markdown2|striptags|stripstr }}"/>
+{% endif %}
+{% endblock %}
+
+{% block robots_meta %}
+{% if post.is_muted %}
+<meta name="robots" content="noindex,follow" />
+{% endif %}
+{{ block.super }}
+{% endblock %}
+
+{% block meta_head %}
+<link rel="canonical" href="http://www.tangleon.com{{ post.get_absolute_url }}"/>
+{% if post.username %}
+<link rel="author" href="http://www.tangleon.com{% url 'app_user' post.username %}"/>
+{% endif %}
+<meta property="og:type" content="article"/>
+<meta property="og:title" content="{{ post.title }}"/>
+{% if post.description %}
+<meta property="og:description" content="{{ post.description|default:''|markdown2|striptags|stripstr }}"/>
+{% endif %}
+<meta property="og:url" content="http://www.tangleon.com{{ post.get_absolute_url }}"/>
+{% if post.img_url %}
+<meta property="og:image" content="http://www.tangleon.com{% url 'app_post_pic' post.post_id %}"/>
+<link rel="image_src" href="http://www.tangleon.com{% url 'app_post_pic' post.post_id %}" />
+{% elif post.user %}
+<meta property="og:image" content="{% gravatar_url post.user 256 %}"/>
+<link rel="image_src" href="{% gravatar_url post.user 256 %}" />
+{% endif %}
+<meta property="twitter:url" content="http://tangleon.com{{ post.get_short_url }}"/>
+{% endblock %}
+
+{% block content-view %}
+<div class="content-view">
+	<div class="sidebar">
+		{% if not post.is_muted %}
+		<div class="the-box" style="padding: 5px 10px;">
+			<p>
+				created on {{ post.created_on }}
+			</p>
+			<p>
+				<span style="font-size:1.5em">{{ post.votes }} score{{ post.votes|pluralize }}</span> ({{ post.likes_percentage }}% likeness)
+			</p>
+			<p>
+				<small> <span class="cool-text">{{ post.up_votes|intcomma }} like{{ post.up_votes|pluralize }}</span> | <span class="warm-text">{{ post.down_votes|intcomma }} dislike{{ post.down_votes|pluralize }}</span> </small>
+			</p>
+		</div>
+		<!--googleoff: index-->
+		<!--noindex-->
+		<div class="robots-nocontent the-box" style="margin-top: 10px; padding: 10px;">
+			<h3>How to comment?</h3>
+			<p>
+				We support markdown formatting in comments, you can write stylish text using following predefined code
+				<br />
+				<br />
+			</p>
+			{% include "app/webparts/markdown_help.html" %}
+		</div>
+		<!--/noindex-->
+		<!--googleon: index-->
+		{% endif %}
+	</div>
+	<div style="overflow: hidden;">
+		<div class="posts-view">
+			{% include "app/webparts/flash_messages.html" %}
+			{% if post.tags_list %}
+			<ul class="the-box sub-title-bar">
+				<li class="active">
+					Room
+				</li>
+				<li class="sub-title">
+					<a href="{% url 'app_tag' post.tags_list.0 %}">{{ post.tags_list.0 }}</a>
+				</li>
+			</ul>
+			{% endif %}
+			{% if not post.is_muted %}
+			{% comment %}
+			<div class="post-big-view">
+				{% with  preview_img_width=600 preview_img_height=400 %}
+				{% include "app/webparts/post_content_large.html" %}
+				{% endwith %}
+			</div>
+			{% endcomment %}
+			<div class="post-content">
+				{% with  preview_img_width=75 preview_img_height=75 show_description=True %}
+				{% include "app/webparts/post_content.html" %}
+				{% endwith %}
+			</div>
+			<div class="comments">
+				<div class="post-comments-box the-box">
+					{% if comment_id %}
+					<a href="{{ post.get_absolute_url }}" style="border: 1px solid #DDD;padding: 5px;margin-bottom: 10px;display: block;">view all user's comments</a>
+					{% endif %}
+					{% if not comment_id  %}
+					{% if app_user.is_authenticated %}
+					<form action="{% url 'app_comment_save' post.post_id post.slug %}" method="post" class="comment-reply" style="display: block;" data-ajax="true" data-ajax-url="{% url 'app_comment_save' post.post_id post.slug %}" data-ajax-update="#post-comments-id-{{ post.post_id }}" data-ajax-mode="before" data-ajax-loading="#loading-post-id-{{ post.post_id }}" data-ajax-success="$('#comment-input-for-post-id-{{ post.post_id }}').val('');">
+						{% csrf_token %}
+						<textarea id="comment-input-for-post-id-{{ post.post_id }}" name="comment_text" maxlength="1000" placeholder="Write a comment...">{{ comment_text|safe }}</textarea>
+						<br/>
+						<div id="loading-post-id-{{ post.post_id }}" class="progress-img"></div>
+						<input type="submit" value="Save"/>
+					</form>
+					{% else %}
+					<p class="message-box">
+						<a href="{% url 'app_login' %}">login</a> or <a href="{% url 'app_signup' %}">sign up</a> to comment
+					</p>
+					{% endif %}
+					{% endif %}
+					<div id="post-comments-id-{{ post.post_id }}" style="clear:both;">
+						<div style="clear: both;">
+							{% with template_name="app/webparts/comment.html" %}
+							{% for comment in post.comments %}
+							{% include template_name %}
+							{% endfor %}
+							{% endwith %}
+						</div>
+					</div>
+				</div>
+			</div>
+			{% else %}
+			{% include "app/webparts/content_muted.html" %}
+			{% endif %}
+		</div>
+	</div>
+</div>
+{% comment Prettify: for coloring code blocks in comments %}
+<script>$('.comments pre').addClass('prettyprint');</script>
+<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+{% endcomment %}
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+{% include "app/webparts/imageviewer.html" %}
+{% endblock %}
+

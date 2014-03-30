@@ -1,0 +1,9 @@
+{% extends "app/email/base.html" %}
+
+{% block content %}
+<p>
+	Please click the link below to activate your account:
+	<br />
+	<a href="http://{{ domain }}/activation/?email={{ user.email }}&activation_code={{ user.activation_code }}">http://{{ domain }}/activation/?email={{ user.email }}&amp;activation_code={{ user.activation_code }}</a>
+</p>
+{% endblock %}
