@@ -3,3 +3,7 @@ django-xmlrpc>=0.1.5
 feedparser>=5.1.3
 markdown2>=2.2.1
 psycopg2>=2.5.2
+django-debug-toolbar==1.2.1
+sqlparse==0.1.11
+wsgiref==0.1.2
+
