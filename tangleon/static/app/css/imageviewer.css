@@ -1,0 +1,31 @@
+.box-content img {
+	max-width: 90%;
+	max-height: 90%;
+	margin: auto;
+	display: block;
+}
+
+.box_content .overlay #iv_comment_link {
+	float: right;
+	margin-left: 20px;
+}
+
+.box_content .overlay #iv_visit_link {
+	float: left;
+}
+
+a#iv_comment_link:after, a#iv_visit_link:after {
+	position: absolute;
+    padding-left: 3px;
+    content: "\2192";
+}
+
+.box_content .overlay a, #iv_content .overlay a:hover {
+	color: white;		
+	text-decoration: none;
+	margin-right: 15px;
+}
+
+.box_content .overlay a:hover {
+	text-decoration: underline;
+}
